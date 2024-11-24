@@ -4,6 +4,7 @@ Param(
     [string]$SubReddit = 'all',
 
     [Parameter(Mandatory = $false)]
+    [ValidateSet('hot', 'new', 'top', 'rising', 'controversial')]
     [string]$SortBy = 'hot',
 
     [Parameter(Mandatory = $false)]
@@ -95,17 +96,20 @@ if (-not $IsValidSubreddit) {
     exit
 }
 
-# Function to fetch and format top comments
-function Get-TopComments {
+# Function to fetch and format comments
+function Get-Comments {
     param (
         [string]$permalink,
         [string]$accessToken,
         [string]$userAgent,
-        [int]$limit = 10,
+        [ValidateRange(1, 100)]
+        [int]$Limit = 10,
+        [ValidateSet('confidence', 'top', 'new', 'controversial', 'old', 'random', 'qa', 'live')]
+        [string]$CommentSort = 'top',
         [int]$ParentProgressId = 0
     )
 
-    $commentsUri = "https://oauth.reddit.com$($permalink)?limit=$limit&sort=top"
+    $commentsUri = "https://oauth.reddit.com$($permalink)?limit=$Limit&sort=$CommentSort"
 
     # Wait to respect rate limits
     Start-Sleep -Milliseconds 1000
@@ -130,13 +134,13 @@ function Get-TopComments {
 
     $comments = $commentsResponse[1].data.children
 
-    $topComments = $comments | Where-Object { $_.kind -eq 't1' } | Select-Object -First $limit
+    $selectedComments = $comments | Where-Object { $_.kind -eq 't1' } | Select-Object -First $Limit
 
     $commentsArray = @()
     $i = 1
-    $TotalComments = $topComments.Count
+    $TotalComments = $selectedComments.Count
 
-    foreach ($comment in $topComments) {
+    foreach ($comment in $selectedComments) {
         $percentComplete = ($i / $TotalComments) * 100
         Write-Progress -Id $commentsProgressId -ParentId $ParentProgressId -Activity "Processing comments" -Status "Processing comment $i of $TotalComments" -PercentComplete $percentComplete
 
@@ -194,7 +198,7 @@ $data = $response.data.children | ForEach-Object {
     Write-Host "Processing Post ID: $($post.id), Permalink: $($post.permalink)"
 
     # Fetch and format the top 10 comments for this post
-    $commentsText = Get-TopComments -permalink $post.permalink -accessToken $accessToken -userAgent $userAgent -limit 10 -ParentProgressId $ProcessPostsProgressId
+    $commentsText = Get-Comments -permalink $post.permalink -accessToken $accessToken -userAgent $userAgent -limit 25 -ParentProgressId $ProcessPostsProgressId -CommentSort top
 
     [PSCustomObject]@{
         'Posted'              = [DateTimeOffset]::FromUnixTimeSeconds($post.created_utc).ToLocalTime().ToString('yyyy-MM-dd HH:mm:ss')
