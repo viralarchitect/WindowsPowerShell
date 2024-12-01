@@ -33,11 +33,24 @@ if ($quarterHour -eq "a quarter to" -or ($quarterHour -eq "o'clock" -and $minute
 $amPm = if ($hour -ge 12) { "PM" } else { "AM" }
 $formattedHour = if ($hour -gt 12) { $hour - 12 } elseif ($hour -eq 0) { 12 } else { $hour }
 
+# Get the local time zone and determine if it's daylight saving time
+$timezone = [System.TimeZoneInfo]::Local
+$isDaylight = $timezone.IsDaylightSavingTime($currentDate)
+if ($timezone.SupportsDaylightSavingTime) {
+    if ($isDaylight) {
+        $timeZoneName = $timezone.DaylightName
+    } else {
+        $timeZoneName = $timezone.StandardName
+    }
+} else {
+    $timeZoneName = $timezone.StandardName
+}
+
 # Construct the phrase
 if ($quarterHour -eq "approximately" -and $minute -lt 60) {
-    $phrase = "Today is $dayOfWeek, $month $day. The time is $formattedHour $amPm."
+    $phrase = "Today is $dayOfWeek, $month $day. The time is $formattedHour $amPm $timeZoneName."
 } else {
-    $phrase = "Today is $dayOfWeek, $month $day. The time is $quarterHour $formattedHour $amPm."
+    $phrase = "Today is $dayOfWeek, $month $day. The time is $quarterHour $formattedHour $amPm $timeZoneName."
 }
 
 # Use the Speak method to say the phrase
