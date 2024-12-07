@@ -16,8 +16,8 @@ $minute = $currentDate.Minute
 $quarterHour = switch ($minute) {
     { $_ -eq 0 } { "exactly" }
     { $_ -ge 1 -and $_ -lt 15 } { "just after" }
-    { $_ -ge 15 -and $_ -lt 30 } { "a quarter past" }
-    { $_ -ge 30 -and $_ -lt 45 } { "half past" }
+    { $_ -ge 15 -and $_ -lt 25 } { "a quarter past" }
+    { $_ -ge 25 -and $_ -lt 45 } { "half past" }
     { $_ -ge 45 -and $_ -lt 55 } { "a quarter to" }
     { $_ -ge 55 -and $_ -lt 60 } { "almost" }
     default { "approximately" }
