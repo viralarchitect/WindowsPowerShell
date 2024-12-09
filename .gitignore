@@ -1,4 +1,5 @@
-Modules/ps2exe/*
+Modules/*
 *.xlsx
 reddit.json
 *desktop.ini
+Microsoft.PowerShell_profile.ps1
