@@ -28,6 +28,8 @@ $greeting = switch ($hour) {
 }
 
 # Determine the closest quarter-hour
+# NOTE: These values are customized to my personal taste and how I think about time.
+#       Feel free to adjust the values to suit your own preferences.
 $minute = $currentDate.Minute
 $quarterHour = switch ($minute) {
     { $_ -eq 0 } { "exactly" }
