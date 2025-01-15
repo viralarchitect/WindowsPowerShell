@@ -1,5 +1,5 @@
 Modules/*
 *.xlsx
-reddit.json
+*reddit.json
 *desktop.ini
 Microsoft.PowerShell_profile.ps1
