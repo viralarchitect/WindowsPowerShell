@@ -8,7 +8,7 @@ $subnetAddress = $network.IPv4Address.PrefixLength
 $defaultGateway = $network.IPv4DefaultGateway.NextHop
 
 # Check if IPv6 is Enabled
-$ipv6Enabled = ($network.IPv6Address -ne $null)
+$ipv6Enabled = ($null -ne $network.IPv6Address)
 
 # Get CPU Information
 $cpu = Get-CimInstance -ClassName Win32_Processor

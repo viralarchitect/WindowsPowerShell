@@ -15,9 +15,10 @@ $month = $currentDate.ToString("MMMM")
 $day = $currentDate.Day
 $hour = $currentDate.Hour
 
-$readAloudName = $env:UserName
 if($Nickname) {
     $readAloudName = $Nickname
+} else {
+    $readAloudName = $env:UserName
 }
 
 # Determine if it is morning, afternoon, or evening
