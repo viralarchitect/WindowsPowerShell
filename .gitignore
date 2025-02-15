@@ -3,3 +3,7 @@ Modules/*
 *reddit.json
 *desktop.ini
 Microsoft.PowerShell_profile.ps1
+*.api.key.json
+desktop.ini
+*.code-workspace
+Data
